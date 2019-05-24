@@ -34,7 +34,8 @@ jobs:
       - run: gradle test
   build-docker:
     machine: true
-    executor: docker-publisher
+    environment:
+      IMAGE_NAME: circleci-demo
     steps:
       - checkout
       - run:
