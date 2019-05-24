@@ -33,10 +33,10 @@ jobs:
 
       - run: gradle test
   build-docker:
+    machine: true
     executor: docker-publisher
     steps:
       - checkout
-      - setup_remote_docker
       - run:
           name: Build Docker image
           command: |
