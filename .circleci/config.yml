@@ -22,7 +22,6 @@ jobs:
       - restore_cache:
           keys:
             - v1-dependencies-{{ checksum "build.gradle" }}
-            - v1-dependencies-
 
       - run: gradle dependencies
 
@@ -33,11 +32,13 @@ jobs:
 
       - run: gradle test
   build-docker:
-    machine: true
+    docker:
+      - image: circleci/openjdk:8-jdk
     environment:
       IMAGE_NAME: circleci-demo
     steps:
       - checkout
+      - run: gradle clean build docker -PimageName=$IMAGE_NAME -PimageVersion=$CIRCLE_BUILD_NUM
       - run:
           name: Build Docker image
           command: |
