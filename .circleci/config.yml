@@ -2,7 +2,7 @@ version: 2.1
 executors:
   docker-publisher:
     environment:
-      IMAGE_NAME: circleci-demo
+      IMAGE_NAME: kcheranev/circleci-demo
     docker:
       - image: circleci/buildpack-deps:stretch
 jobs:
