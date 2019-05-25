@@ -38,6 +38,8 @@ jobs:
       IMAGE_NAME: circleci-demo
     steps:
       - checkout
+      - setup_remote_docker:
+          docker_layer_caching: true
       - run: gradle clean build docker -PimageName=$IMAGE_NAME -PimageVersion=$CIRCLE_BUILD_NUM
       - run:
           name: Build Docker image
