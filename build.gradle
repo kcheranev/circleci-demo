@@ -22,7 +22,7 @@ dependencies {
 
 docker {
     if (project.hasProperty("imageName") && project.hasProperty("imageVersion")) {
-        name "${project.imageName}-${project.imageVersion}"
+        name "kcheranev/${project.imageName}-${project.imageVersion}"
         copySpec.from("$buildDir/libs").include("*.jar").into("libs")
         buildArgs(['JAR_FILE': "libs/${project.name}-${version}.jar"])
     }
