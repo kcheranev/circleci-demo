@@ -25,14 +25,19 @@ jobs:
           key: v1-dependencies-{{ checksum "build.gradle" }}
       - run: gradle test
 
+  tag-get-version:
+    docker:
+      - image: circleci/openjdk:8-jdk
+    steps:
+      - checkout
+      - run: gradle final -Prelease.scope=minor
+
   build-docker-image:
     executor: docker-publisher
     steps:
       - checkout
       - setup_remote_docker:
           docker_layer_caching: true
-      - run: gradle final -Prelease.scope=minor
-      - run: git fetch
       - run: gradle clean build docker -PimageName=$IMAGE_NAME
       - run:
           name: Archive Docker image
@@ -69,7 +74,7 @@ workflows:
   build-master:
     jobs:
       - compile-and-test
-      - build-docker-image:
+      - tag-get-version:
           requires:
             - compile-and-test
           filters:
@@ -78,8 +83,14 @@ workflows:
   tagged-build:
     jobs:
       - publish-docker-image:
-#          requires:
-#            - build-docker-image
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /^v.*/
+      - publish-docker-image:
+          requires:
+            - build-docker-image
           filters:
             branches:
               ignore: /.*/
