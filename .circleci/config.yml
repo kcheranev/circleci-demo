@@ -79,6 +79,6 @@ workflows:
             - build-docker-image
           filters:
             branches:
-              only: master
+              ignore: /.*/
             tags:
               only: /^v.*/
