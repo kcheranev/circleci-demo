@@ -4,7 +4,7 @@ executors:
     environment:
       IMAGE_NAME: kcheranev/circleci-demo
     docker:
-      - image: circleci/buildpack-deps:stretch
+      - image: circleci/openjdk:8-jdk
 jobs:
   compile-and-test:
     docker:
@@ -31,11 +31,9 @@ jobs:
           key: v1-dependencies-{{ checksum "build.gradle" }}
 
       - run: gradle test
-  build-docker:
-    docker:
-      - image: circleci/openjdk:8-jdk
-    environment:
-      IMAGE_NAME: kcheranev/circleci-demo
+
+  build-docker-image:
+    executor: docker-publisher
     steps:
       - checkout
       - setup_remote_docker:
@@ -48,12 +46,14 @@ jobs:
           root: .
           paths:
             - ./image.tar
-  publish-latest:
+            -
+  publish-docker-image:
     executor: docker-publisher
     steps:
       - attach_workspace:
           at: /tmp/workspace
-      - setup_remote_docker
+      - setup_remote_docker:
+          docker_layer_caching: true
       - run:
           name: Load archived Docker image
           command: docker load -i /tmp/workspace/image.tar
@@ -62,20 +62,21 @@ jobs:
           command: |
             echo "$DOCKERHUB_PASS" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
             docker push $IMAGE_NAME:latest
+
 workflows:
   version: 2
   build-master:
     jobs:
       - compile-and-test
-      - build-docker:
+      - build-docker-image:
           requires:
             - compile-and-test
           filters:
             branches:
               only: master
-      - publish-latest:
+      - publish-docker-image:
           requires:
-            - build-docker
+            - build-docker-image
           filters:
             branches:
               only: master
