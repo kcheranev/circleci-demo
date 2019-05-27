@@ -9,27 +9,20 @@ jobs:
   compile-and-test:
     docker:
       - image: circleci/openjdk:8-jdk
-
     working_directory: ~/repo
-
     environment:
       JVM_OPTS: -Xmx3200m
       TERM: dumb
-
     steps:
       - checkout
-
       - restore_cache:
           keys:
             - v1-dependencies-{{ checksum "build.gradle" }}
-
       - run: gradle dependencies
-
       - save_cache:
           paths:
             - ~/.gradle
           key: v1-dependencies-{{ checksum "build.gradle" }}
-
       - run: gradle test
 
   build-docker-image:
@@ -38,7 +31,7 @@ jobs:
       - checkout
       - setup_remote_docker:
           docker_layer_caching: true
-      - run: gradle final -Prelease.scope=major
+      - run: gradle final -Prelease.scope=minor
       - run: gradle clean build docker -PimageName=$IMAGE_NAME
       - run:
           name: Archive Docker image
@@ -62,7 +55,10 @@ jobs:
           name: Publish Docker Image to Docker Hub
           command: |
             echo "$DOCKERHUB_PASS" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
+            IMAGE_TAG=${CIRCLE_TAG/v/''}
+            docker tag $IMAGE_NAME:latest $IMAGE_NAME:$IMAGE_TAG
             docker push $IMAGE_NAME:latest
+            docker push $IMAGE_NAME:$IMAGE_TAG
 
 workflows:
   version: 2
