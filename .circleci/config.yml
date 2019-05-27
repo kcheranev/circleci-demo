@@ -38,10 +38,7 @@ jobs:
       - checkout
       - setup_remote_docker:
           docker_layer_caching: true
-      - run:
-          name: Check Scripts
-          command: |
-            git tag -l
+      - run: gradle final -Prelease.scope=major
       - run: gradle clean build docker -PimageName=$IMAGE_NAME
       - run:
           name: Archive Docker image
