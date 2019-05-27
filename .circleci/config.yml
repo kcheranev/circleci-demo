@@ -75,6 +75,8 @@ workflows:
           filters:
             branches:
               only: master
+  tagged-build:
+    jobs:
       - publish-docker-image:
 #          requires:
 #            - build-docker-image
