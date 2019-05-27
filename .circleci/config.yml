@@ -51,6 +51,7 @@ jobs:
       - run:
           name: Load archived Docker image
           command: docker load -i /tmp/workspace/image.tar
+      - run: git fetch
       - run:
           name: Publish Docker Image to Docker Hub
           command: |
