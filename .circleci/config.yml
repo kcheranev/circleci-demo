@@ -76,8 +76,8 @@ workflows:
             branches:
               only: master
       - publish-docker-image:
-          requires:
-            - build-docker-image
+#          requires:
+#            - build-docker-image
           filters:
             branches:
               ignore: /.*/
