@@ -82,7 +82,7 @@ workflows:
               only: master
   tagged-build:
     jobs:
-      - publish-docker-image:
+      - build-docker-image:
           filters:
             branches:
               ignore: /.*/
