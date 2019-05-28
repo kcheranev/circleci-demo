@@ -1,4 +1,18 @@
 version: 2.1
+commands:
+  save_gradle_cache:
+    steps:
+      - save_cache:
+          paths:
+            - ~/.gradle
+          key: gradle-repo-v1-{{ .Branch }}-{{ checksum "dependencies.lockfile" }}
+  restore_gradle_cache:
+    steps:
+      - restore_cache:
+          keys:
+            - gradle-repo-v1-{{ .Branch }}-{{ checksum "dependencies.lockfile" }}
+            - gradle-repo-v1-{{ .Branch }}-
+            - gradle-repo-v1-
 executors:
   docker-publisher:
     environment:
@@ -12,22 +26,18 @@ jobs:
     working_directory: ~/repo
     steps:
       - checkout
-#      - restore_cache:
-#          keys:
-#            - v1-dependencies-{{ checksum "build.gradle" }}
-#      - run: gradle dependencies
-#      - save_cache:
-#          paths:
-#            - ~/.gradle
-#          key: v1-dependencies-{{ checksum "build.gradle" }}
+      - restore_gradle_cache
       - run: gradle test
+      - save_gradle_cache
 
   tag-git-version:
     docker:
       - image: circleci/openjdk:8-jdk
     steps:
       - checkout
+      - restore_gradle_cache
       - run: gradle final -Prelease.scope=minor
+      - save_gradle_cache
 
   build-docker-image:
     executor: docker-publisher
@@ -35,7 +45,9 @@ jobs:
       - checkout
       - setup_remote_docker:
           docker_layer_caching: true
-      - run: gradle clean build docker -PimageName=$IMAGE_NAME
+      - restore_gradle_cache
+      - run: gradle build docker -PimageName=$IMAGE_NAME
+      - save_gradle_cache
       - run:
           name: Archive Docker image
           command: docker save -o image.tar $IMAGE_NAME
