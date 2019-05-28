@@ -15,9 +15,9 @@ commands:
             - gradle-repo-v1-
 
 executors:
-  docker-publisher:
+  default-executor:
     environment:
-      IMAGE_NAME: circleci-demo
+      IMAGE_NAME: $CIRCLE_PROJECT_REPONAME
     docker:
       - image: circleci/openjdk:8-jdk
 jobs:
@@ -32,8 +32,7 @@ jobs:
       - save_gradle_cache
 
   tag-git-version:
-    docker:
-      - image: circleci/openjdk:8-jdk
+    executor: default-executor
     steps:
       - checkout
       - restore_gradle_cache
@@ -58,7 +57,7 @@ jobs:
       - save_gradle_cache
 
   build-docker-image:
-    executor: docker-publisher
+    executor: default-executor
     steps:
       - checkout
       - setup_remote_docker:
@@ -75,7 +74,7 @@ jobs:
             - ./image.tar
 
   publish-docker-image:
-    executor: docker-publisher
+    executor: default-executor
     steps:
       - attach_workspace:
           at: /tmp/workspace
