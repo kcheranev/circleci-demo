@@ -64,7 +64,7 @@ jobs:
       - run:
           name: Archive Docker image
           command: |
-            docker save -o image.tar $CIRCLE_PROJECT_REPONAME
+            docker save -o image.tar $DOCKERHUB_USERNAME/$CIRCLE_PROJECT_REPONAME
       - persist_to_workspace:
           root: .
           paths:
@@ -86,7 +86,7 @@ jobs:
           command: |
             echo "$DOCKERHUB_PASS" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
             IMAGE_TAG=${CIRCLE_TAG/v/''}
-            IMAGE_NAME=$CIRCLE_PROJECT_REPONAME
+            IMAGE_NAME=$DOCKERHUB_USERNAME/$CIRCLE_PROJECT_REPONAME
             docker tag $IMAGE_NAME:latest $IMAGE_NAME:$IMAGE_TAG
             docker push $IMAGE_NAME:latest
             docker push $IMAGE_NAME:$IMAGE_TAG
