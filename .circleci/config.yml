@@ -13,6 +13,7 @@ commands:
             - gradle-repo-v1-{{ .Branch }}-{{ checksum "build.gradle" }}
             - gradle-repo-v1-{{ .Branch }}-
             - gradle-repo-v1-
+
 executors:
   docker-publisher:
     environment:
