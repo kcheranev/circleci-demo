@@ -62,7 +62,8 @@ jobs:
                 exit 1
             fi
             echo "scope2 =" $SCOPE
-      - run: gradle final -Prelease.scope=$SCOPE
+            echo 'export RELEASE_SCOPE="$SCOPE"' >> $BASH_ENV
+      - run: gradle final -Prelease.scope=$RELEASE_SCOPE
       - save_gradle_cache
 
   build-docker-image:
