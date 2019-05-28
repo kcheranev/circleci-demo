@@ -41,27 +41,19 @@ jobs:
           name: Get Release Scope
           command: |
             COMMIT_MSG=$(git log --format=%B -n 1 $CIRCLE_SHA1)
-            echo $COMMIT_MSG
-            if [[ $COMMIT_MSG == feat* ]] ;
-            then
-                echo "minor hit"
+            if [[ $COMMIT_MSG == feat* ]]; then
                 SCOPE="minor"
             fi
-            if [[ $COMMIT_MSG == fix* ]] ;
-            then
-                echo "patch hit"
+            if [[ $COMMIT_MSG == fix* ]]; then
                 SCOPE="patch"
-                echo "scope =" $SCOPE
             fi
-            if [[ $COMMIT_MSG == release* ]] ;
-            then
-                echo "major hit"
+            if [[ $COMMIT_MSG == release* ]]; then
                 SCOPE="major"
             fi
             if [ -z "$SCOPE" ]; then
+                echo "The commit message must begin with one of the following keywords: fix, feat, release"
                 exit 1
             fi
-            echo "scope2 =" $SCOPE
             gradle final -Prelease.scope=$SCOPE
       - save_gradle_cache
 
