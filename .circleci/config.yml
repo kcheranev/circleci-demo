@@ -17,7 +17,7 @@ commands:
 executors:
   docker-publisher:
     environment:
-      IMAGE_NAME: kcheranev/circleci-demo
+      IMAGE_NAME: circleci-demo
     docker:
       - image: circleci/openjdk:8-jdk
 jobs:
@@ -90,9 +90,10 @@ jobs:
             echo "$DOCKERHUB_PASS" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
             echo 'tag = ' $CIRCLE_TAG
             IMAGE_TAG=${CIRCLE_TAG/v/''}
-            docker tag $IMAGE_NAME:latest $IMAGE_NAME:$IMAGE_TAG
-            docker push $IMAGE_NAME:latest
-            docker push $IMAGE_NAME:$IMAGE_TAG
+            FULL_IMAGE_NAME=kcheranev/$IMAGE_NAME
+            docker tag $FULL_IMAGE_NAME:latest $FULL_IMAGE_NAME:$IMAGE_TAG
+            docker push $FULL_IMAGE_NAME:latest
+            docker push $FULL_IMAGE_NAME:$IMAGE_TAG
 
 workflows:
   version: 2
