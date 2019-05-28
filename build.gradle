@@ -21,10 +21,7 @@ dependencies {
 }
 
 docker {
-    if (project.hasProperty("imageName")) {
-        name "${project.imageName}"
-        copySpec.from("$buildDir/libs").include("*.jar").into("libs")
-        buildArgs(['JAR_FILE': "libs/${project.name}-${version}.jar"])
-        tag 'circleci-demo', 'latest'
-    }
+    name project.name
+    copySpec.from("$buildDir/libs").include("*.jar").into("libs")
+    buildArgs(['JAR_FILE': "libs/${project.name}-${version}.jar"])
 }
