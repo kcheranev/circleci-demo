@@ -37,7 +37,24 @@ jobs:
     steps:
       - checkout
       - restore_gradle_cache
-      - run: gradle final -Prelease.scope=minor
+      - command: |
+          COMMIT_MSG = $( git log --format=%B -n 1 $CIRCLE_SHA1)
+          if [[ COMMIT_MSG == feat* ]] ;
+          then
+              SCOPE = "minor"
+          fi
+          if [[ COMMIT_MSG == fix* ]] ;
+          then
+              SCOPE = "patch"
+          fi
+          if [[ COMMIT_MSG == release* ]] ;
+          then
+              SCOPE = "major"
+          fi
+          if [ -z "$SCOPE" ]; then
+              exit 1
+          fi
+      - run: gradle final -Prelease.scope=$SCOPE
       - save_gradle_cache
 
   build-docker-image:
