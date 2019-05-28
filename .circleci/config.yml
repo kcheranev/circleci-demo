@@ -67,7 +67,10 @@ jobs:
       - save_gradle_cache
       - run:
           name: Archive Docker image
-          command: docker save -o image.tar $IMAGE_NAME
+          command: |
+            echo 'image name ' $IMAGE_NAME
+            echo 'circle_project_reponame ' $CIRCLE_PROJECT_REPONAME
+            docker save -o image.tar $IMAGE_NAME
       - persist_to_workspace:
           root: .
           paths:
