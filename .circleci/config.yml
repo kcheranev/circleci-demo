@@ -88,12 +88,10 @@ jobs:
           name: Publish Docker Image to Docker Hub
           command: |
             echo "$DOCKERHUB_PASS" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
-            echo 'tag = ' $CIRCLE_TAG
             IMAGE_TAG=${CIRCLE_TAG/v/''}
-            FULL_IMAGE_NAME=kcheranev/$IMAGE_NAME
-            docker tag $FULL_IMAGE_NAME:latest $FULL_IMAGE_NAME:$IMAGE_TAG
-            docker push $FULL_IMAGE_NAME:latest
-            docker push $FULL_IMAGE_NAME:$IMAGE_TAG
+            docker tag $IMAGE_NAME:latest $IMAGE_NAME:$IMAGE_TAG
+            docker push $IMAGE_NAME:latest
+            docker push $IMAGE_NAME:$IMAGE_TAG
 
 workflows:
   version: 2

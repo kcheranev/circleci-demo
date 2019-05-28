@@ -21,7 +21,7 @@ dependencies {
 }
 
 docker {
-    name project.name
+    name "kcheranev/$project.name"
     copySpec.from("$buildDir/libs").include("*.jar").into("libs")
     buildArgs(['JAR_FILE': "libs/${project.name}-${version}.jar"])
 }
