@@ -37,7 +37,7 @@ jobs:
     steps:
       - checkout
       - restore_gradle_cache
-      - run: gradle test
+      - run: gradlew test
       - save_gradle_cache
 
   tag-git-version:
