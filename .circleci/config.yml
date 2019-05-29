@@ -148,15 +148,30 @@ workflows:
       - build-docker-image:
           filters:
             branches:
-              ignore: /.*/
+              only: master
             tags:
               only: /^v.*/
       - publish-docker-image:
           requires:
             - build-docker-image
+          filters:
+            branches:
+              only: master
+            tags:
+              only: /^v.*/
       - checkout-infra-script:
           requires:
             - publish-docker-image
+          filters:
+            branches:
+              only: master
+            tags:
+              only: /^v.*/
       - deploy:
           requires:
             - checkout-infra-script
+          filters:
+            branches:
+              only: master
+            tags:
+              only: /^v.*/
