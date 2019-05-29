@@ -14,6 +14,15 @@ commands:
             - gradle-repo-v1-{{ .Branch }}-
             - gradle-repo-v1-
 
+references:
+
+  workspace_root: &workspace_root
+                    /tmp/workspace
+
+  attach_workspace: &attach_workspace
+    attach_workspace:
+      at: *workspace_root
+
 jobs:
   compile-and-test:
     docker:
@@ -74,8 +83,7 @@ jobs:
     docker:
       - image: circleci/openjdk:8-jdk
     steps:
-      - attach_workspace:
-          at: /tmp/workspace
+      - *attach_workspace
       - setup_remote_docker:
           docker_layer_caching: true
       - run:
@@ -91,9 +99,42 @@ jobs:
             docker push $IMAGE_NAME:latest
             docker push $IMAGE_NAME:$IMAGE_TAG
 
+  checkout-infra-script:
+    docker:
+      - image: circleci/circleci-cli
+        environment:
+          WS_DIR: *workspace_root
+    steps:
+      - checkout
+      - run:
+          command: |
+            mkdir -p ~/.ssh
+            ssh-keyscan -H github.com -p 22 >> ~/.ssh/known_hosts
+            mkdir -p ${WS_DIR}/circle-ci-infra-test
+            git clone git@github.com:kcheranev/circle-ci-infra-test.git ${WS_DIR}/circle-ci-infra-test
+            ls ${WS_DIR}
+      - persist_to_workspace:
+          root: *workspace_root
+          paths:
+            - circle-ci-infra-test
+
+  deploy:
+    docker:
+      - image: hashicorp/terraform:0.12.0
+        environment:
+          WS_DIR: *workspace_root
+    steps:
+      - *attach_workspace
+      - run: ls ${WS_DIR}
+      - run:
+          command: |
+            cd ${WS_DIR}/circle-ci-infra-test
+            terraform init
+            terraform apply -auto-approve -state=terraform.x-sell --var="token=${K8S_TOKEN}" --var="k8s_host=${K8S_HOST}"
+
 workflows:
   version: 2
-  build-master:
+  pr-build:
     jobs:
       - compile-and-test
       - tag-git-version:
@@ -102,7 +143,7 @@ workflows:
           filters:
             branches:
               only: master
-  tagged-build:
+  deploy:
     jobs:
       - build-docker-image:
           filters:
@@ -113,8 +154,9 @@ workflows:
       - publish-docker-image:
           requires:
             - build-docker-image
-          filters:
-            branches:
-              ignore: /.*/
-            tags:
-              only: /^v.*/
+      - checkout-infra-script:
+          requires:
+            - publish-docker-image
+      - deploy:
+        requires:
+          - checkout-infra-script
