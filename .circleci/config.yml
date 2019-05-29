@@ -23,6 +23,13 @@ references:
     attach_workspace:
       at: *workspace_root
 
+  workspace_tag_filter: &workspace_tag_filter
+    filters:
+      branches:
+        ignore: /.*/
+      tags:
+        only: /^v.*/
+
 jobs:
   compile-and-test:
     docker:
@@ -146,32 +153,16 @@ workflows:
   build-docker-and-deploy:
     jobs:
       - build-docker-image:
-          filters:
-            branches:
-              ignore: /.*/
-            tags:
-              only: /^v.*/
+          *workspace_tag_filter
       - publish-docker-image:
           requires:
             - build-docker-image
-          filters:
-            branches:
-              ignore: /.*/
-            tags:
-              only: /^v.*/
+          *workspace_tag_filter
       - checkout-infra-script:
           requires:
             - publish-docker-image
-          filters:
-            branches:
-              ignore: /.*/
-            tags:
-              only: /^v.*/
+          *workspace_tag_filter
       - deploy:
           requires:
             - checkout-infra-script
-          filters:
-            branches:
-              ignore: /.*/
-            tags:
-              only: /^v.*/
+          *workspace_tag_filter
