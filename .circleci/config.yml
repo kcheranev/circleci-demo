@@ -153,16 +153,16 @@ workflows:
   build-docker-and-deploy:
     jobs:
       - build-docker-image:
-          *workspace_tag_filter
+          <<: *workspace_tag_filter
       - publish-docker-image:
           requires:
             - build-docker-image
-          *workspace_tag_filter
+          <<: *workspace_tag_filter
       - checkout-infra-script:
           requires:
             - publish-docker-image
-          *workspace_tag_filter
+          <<: *workspace_tag_filter
       - deploy:
           requires:
             - checkout-infra-script
-          *workspace_tag_filter
+          <<: *workspace_tag_filter
