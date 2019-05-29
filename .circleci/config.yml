@@ -61,7 +61,7 @@ jobs:
                 echo "The commit message must begin with one of the following keywords: fix, feat, release"
                 exit 1
             fi
-            gradle final -Prelease.scope=$SCOPE
+            gradle final -x test -Prelease.scope=$SCOPE
       - save_gradle_cache
 
   build-docker-image:
@@ -72,7 +72,7 @@ jobs:
       - setup_remote_docker:
           docker_layer_caching: true
       - restore_gradle_cache
-      - run: gradle clean build docker
+      - run: gradle clean build -x test docker
       - save_gradle_cache
       - run:
           name: Archive Docker image
