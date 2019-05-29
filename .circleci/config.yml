@@ -158,5 +158,5 @@ workflows:
           requires:
             - publish-docker-image
       - deploy:
-        requires:
-          - checkout-infra-script
+          requires:
+            - checkout-infra-script
