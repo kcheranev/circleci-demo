@@ -15,7 +15,6 @@ commands:
             - gradle-repo-v1-
 
 references:
-
   workspace_root: &workspace_root
                     /tmp/workspace
 
