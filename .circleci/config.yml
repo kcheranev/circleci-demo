@@ -148,7 +148,7 @@ workflows:
       - build-docker-image:
           filters:
             branches:
-              only: master
+              ignore: /.*/
             tags:
               only: /^v.*/
       - publish-docker-image:
@@ -156,7 +156,7 @@ workflows:
             - build-docker-image
           filters:
             branches:
-              only: master
+              ignore: /.*/
             tags:
               only: /^v.*/
       - checkout-infra-script:
@@ -164,7 +164,7 @@ workflows:
             - publish-docker-image
           filters:
             branches:
-              only: master
+              ignore: /.*/
             tags:
               only: /^v.*/
       - deploy:
@@ -172,6 +172,6 @@ workflows:
             - checkout-infra-script
           filters:
             branches:
-              only: master
+              ignore: /.*/
             tags:
               only: /^v.*/
