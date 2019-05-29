@@ -36,7 +36,7 @@ jobs:
     steps:
       - checkout
       - restore_gradle_cache
-      - run: export TERM=${TERM:-dumb} && gradle test
+      - run: export TERM=${TERM:-dumb} && ./gradlew test
       - save_gradle_cache
 
   tag-git-version:
