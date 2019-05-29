@@ -33,7 +33,6 @@ references:
 jobs:
   compile-and-test:
     machine: true
-    working_directory: ~/repo
     steps:
       - checkout
       - restore_gradle_cache
