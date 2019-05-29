@@ -4,13 +4,14 @@ import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import org.bson.Document;
-import org.junit.ClassRule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.testcontainers.containers.GenericContainer;
+import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
 
 import static org.junit.Assert.assertEquals;
 
@@ -20,11 +21,12 @@ import static org.junit.Assert.assertEquals;
         "SPRING_DATA_MONGODB_HOST = localhost",
         "SPRING_DATA_MONGODB_PORT = 27017"
 })
-public class DemoApplicationTests {
+@Testcontainers
+public class DemoApplicationTest {
 
     private static final int MONGO_PORT = 27017;
 
-    @ClassRule
+    @Container
     public static GenericContainer mongo = new GenericContainer("mongo:3.1.5")
             .withExposedPorts(MONGO_PORT);
 
