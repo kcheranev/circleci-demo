@@ -134,7 +134,7 @@ jobs:
 
 workflows:
   version: 2
-  pr-build:
+  compile-and-test:
     jobs:
       - compile-and-test
       - tag-git-version:
@@ -143,12 +143,12 @@ workflows:
           filters:
             branches:
               only: master
-  deploy:
+  build-docker-and-deploy:
     jobs:
       - build-docker-image:
           filters:
             branches:
-              ignore: /.*/
+              only: master
             tags:
               only: /^v.*/
       - publish-docker-image:
