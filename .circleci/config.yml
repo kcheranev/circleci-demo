@@ -133,6 +133,7 @@ jobs:
       - run:
           command: |
             cd ${WS_DIR}/circle-ci-infra-test
+            echo -e "[default]\naws_access_key_id = ${S3_ACCESS_KEY}\naws_secret_access_key = ${S3_SECRET_KEY}\n" > s3-credentials.conf
             terraform init
             terraform apply -auto-approve -state=terraform.x-sell --var="token=${K8S_TOKEN}" --var="k8s_host=${K8S_HOST}"
 
