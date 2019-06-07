@@ -1,6 +1,7 @@
 HELP.md
 .gradle
 /build/
+/newrelic/logs
 !gradle/wrapper/gradle-wrapper.jar
 
 ### STS ###
