@@ -15,7 +15,6 @@ repositories {
 }
 
 dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.apache.logging.log4j:log4j-core:2.11.2'
     implementation 'org.apache.logging.log4j:log4j-api:2.11.2'
@@ -31,10 +30,8 @@ dependencies {
 
 
 docker {
-    name "kcheranev/$project.name"
-    files "$projectDir.path/newrelic/newrelic.yml", "$projectDir.path/newrelic/newrelic.jar", "$projectDir.path/newrelic/PCAcert_new.cer"
+    name "$project.name"
     copySpec.from("$buildDir/libs").into("build-context")
-
     buildArgs([
             'JAR_FILE' : "${project.name}-${version}.jar",
             'BUILD_DIR': "build-context"
