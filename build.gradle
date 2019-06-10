@@ -1,14 +1,14 @@
 plugins {
+    id 'java'
     id 'org.springframework.boot' version '2.1.5.RELEASE'
     id 'com.palantir.docker' version '0.22.1'
     id 'nebula.release' version '6.3.5'
-    id 'java'
 }
 
 apply plugin: 'io.spring.dependency-management'
 
 group = 'test'
-sourceCompatibility = '1.8'
+sourceCompatibility = '11'
 
 repositories {
     mavenCentral()
@@ -16,6 +16,8 @@ repositories {
 
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+
     implementation 'org.apache.logging.log4j:log4j-core:2.11.2'
     implementation 'org.apache.logging.log4j:log4j-api:2.11.2'
 
@@ -40,7 +42,4 @@ docker {
 
 test {
     useJUnitPlatform()
-    testLogging {
-        events "passed", "skipped", "failed"
-    }
 }
